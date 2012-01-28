@@ -1,88 +1,306 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8'>
+	<meta charset='utf-8'>
 
-  <title>ArthurClemens/jquery-page-scroll-plugin @ GitHub</title>
+	<title>ArthurClemens/jquery-page-scroll-plugin @ GitHub</title>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #ffffff;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #000000; }
-    h3 { text-align: center; color: #000000; }
-    a { color: #000000; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'></script>
+	
+	<script src='js/jquery.page-scroll.js' type='text/javascript'></script>
+	
+	<script type='text/javascript'>
+		// <![CDATA[
+		jQuery(document).ready(function($) {
+			
+			$('a.normal').pageScroll();
+			
+			$('a.special').pageScroll({
+				duration: 1500,
+			});
+			
+			$('a.target').pageScroll({
+				target: $('#target'),
+				duration: 100
+			});
+			
+			$('a.beforeafter').pageScroll({
+				beforeScroll: function(opts) {
+					alert("before scroll; duration=" + opts.duration);
+					// speed up
+					opts.duration = 100;
+				},
+				afterScroll: function(opts) {
+					alert("after scroll; duration=" + opts.duration);
+				},
+				beforeScrollDelay: 500,
+				afterScrollDelay: 500
+			});
+			
+			$('a.stop').pageScroll({
+				beforeScroll: function(opts) {
+					var stop = confirm("Stop scrolling?");
+					if (stop) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+			});
+			
+		});
+		// ]]>
+	</script>
+	
+	<style type="text/css">
+		body {
+			margin-top: 1.0em;
+			background-color: #ffffff;
+			font-family: Helvetica, Arial, FreeSans, sans-serif;
+			color: #000;
+		}
+		#container {
+			margin: 0 auto;
+			width: 700px;
+		}
+		h1 { font-size: 2.4em; color: #000000; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 {
+			display: block;
+			padding: 5px 10px;
+			background: #ddd;
+			font-size: 1.2em;
+			color: #000;
+			margin: 2em 0 0 0;
+		}
+		h3 { text-align: center; color: #000000; }
+		a {
+			color: #06c;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
+		.description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px;}
+		.download { float: right; }
+		pre { background: #000; color: #fff; padding: 15px;}
+		hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+		.section {
+			margin: 2em 0 0 0;
+		}
+		.footer {
+			border-top: 1px solid #ddd;
+			padding: 1em 0;
+			margin: 2em 0;
+		}
+	</style>
 </head>
 
 <body>
-  <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+	<span id="top"></span>
+	<a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <div id="container">
+	<div id="container">
 
-    <div class="download">
-      <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin/zipball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
-      <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin/tarball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
-    </div>
+		<h1>jQuery Page scroll plugin</a></h1>
 
-    <h1><a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin">jquery-page-scroll-plugin</a>
-      <span class="small">by <a href="https://github.com/ArthurClemens">ArthurClemens</a></span></h1>
+		<div class="description">
+			Yet another and in small ways different page scroll plugin.
+		</div>
+		
+		<p class="section">
+			<b>Usage:</b>
+		</p>
+<pre>
+$('a').pageScroll();
+</pre>
 
-    <div class="description">
-      Yet another and in small ways different page scroll plugin
-    </div>
+		<div class="description">
+			Illustration of options:
+		</div>
 
-    
+		<p class="section">
+			<b>Page links, default behaviour:</b>
+		</p>
+<pre>
+$('a.normal').pageScroll();
+</pre>
+		<ul>
+			<li><a class="normal" href="#named_anchor">Named anchor</a></li>
+			<li><a class="normal" href="#id_anchor">ID anchor</a></li>
+			<li><a class="normal" href="#.id_anchor">ID anchor with dot in name</a></li>
+		</ul>
+		<p class="section">
+			<b>Page links with options set:</b>
+		</p>
+<pre>
+$('a.special').pageScroll({
+	duration: 1500,
+});
+</pre>
+		<ul>
+			<li><a class="special" href="#named_anchor">Named anchor</a></li>
+			<li><a class="special" href="#id_anchor">ID anchor</a></li>
+			<li><a class="special" href="#.id_anchor">ID anchor with dot in name</a></li>
+		</ul>
+		<p class="section">
+			<b>Page link with target:</b>
+		</p>
+<pre>
+$('a.target').pageScroll({
+	target: $('#target'),
+	duration: 100
+});
+</pre>
+		<ul>
+			<li><a class="target" href="#">Target anchor</a></li>
+		</ul>
+		<p class="section">
+			<b>Page link with before and after scroll options set:</b>
+		</p>
+<pre>
+$('a.beforeafter').pageScroll({
+	beforeScroll: function(opts) {
+		alert("before scroll; duration=" + opts.duration);
+		// speed up
+		opts.duration = 100;
+	},
+	afterScroll: function(opts) {
+		alert("after scroll; duration=" + opts.duration);
+	},
+	beforeScrollDelay: 500,
+	afterScrollDelay: 500
+});
+</pre>
+		<ul>
+			<li><a class="beforeafter" href="#id_anchor">Before and after anchor</a></li>
+		</ul>
 
-    
+		<p class="section">
+			<b>Page link with before function delegate to conditionally stop scrolling:</b>
+		</p>
+<pre>
+$('a.stop').pageScroll({
+	beforeScroll: function(opts) {
+		var stop = confirm("Stop scrolling?");
+		if (stop) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+});
+</pre>
+		<ul>
+			<li><a class="stop" href="#id_anchor">Stop scrolling</a></li>
+		</ul>
+		<h2>Proin leo turpis</h2>
+		<p>
+			Proin leo turpis, lacinia nec laoreet at, pretium a urna. Maecenas ac nibh id metus blandit posuere non quis dui. Nunc commodo orci commodo felis ullamcorper in consequat leo pharetra. Nam consequat lectus nec lacus fermentum ultrices. Suspendisse massa metus, faucibus mollis ornare nec, porta nec odio. Praesent a enim quis sem sollicitudin laoreet. Donec nec est ante, sed pretium tellus. In aliquam ligula aliquam arcu tempor blandit sagittis sapien luctus. Sed ut urna vel nulla scelerisque suscipit nec ac erat. Suspendisse ipsum erat, euismod ultrices accumsan nec, accumsan nec sem. Morbi felis lorem, mollis suscipit viverra non, interdum laoreet lectus. Nunc molestie congue semper.
+		</p>
+		<p>
+			Quisque sed lorem ac urna pulvinar dapibus eu a lectus. Mauris tincidunt ultrices ultrices. Nulla at odio auctor metus varius viverra et vel ante. Duis hendrerit varius euismod. Aliquam rhoncus arcu ut velit posuere tincidunt eleifend nunc accumsan. Etiam ac leo sed metus adipiscing commodo. In hac habitasse platea dictumst. Nulla metus est, vehicula in sollicitudin non, pulvinar at ante. Nunc sed nisi nibh. In bibendum, nunc non sagittis ornare, lorem ipsum feugiat velit, et tempus leo mauris et dui.
+		</p>
+		<p>
+			Donec tempor enim feugiat nisl congue eu sagittis ante blandit. Phasellus vitae tortor pellentesque nibh cursus porta. Quisque nisi purus, lobortis quis tempus sed, lobortis nec enim. Sed gravida, nisl blandit mollis pharetra, nisl diam consequat arcu, consequat molestie justo nulla id augue. Suspendisse eget consectetur enim. Nullam a purus quis lectus egestas ultricies. Donec turpis arcu, dignissim semper condimentum in, eleifend a augue. Nulla ac nisi molestie mauris commodo tristique ac sit amet odio. Nulla vel tellus a felis gravida auctor nec eu urna. Pellentesque a nisi at enim tincidunt rhoncus eget sit amet turpis. Sed feugiat blandit purus nec venenatis.
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<p>
+			Proin leo turpis, lacinia nec laoreet at, pretium a urna. Maecenas ac nibh id metus blandit posuere non quis dui. Nunc commodo orci commodo felis ullamcorper in consequat leo pharetra. Nam consequat lectus nec lacus fermentum ultrices. Suspendisse massa metus, faucibus mollis ornare nec, porta nec odio. Praesent a enim quis sem sollicitudin laoreet. Donec nec est ante, sed pretium tellus. In aliquam ligula aliquam arcu tempor blandit sagittis sapien luctus. Sed ut urna vel nulla scelerisque suscipit nec ac erat. Suspendisse ipsum erat, euismod ultrices accumsan nec, accumsan nec sem. Morbi felis lorem, mollis suscipit viverra non, interdum laoreet lectus. Nunc molestie congue semper.
+		</p>
+		<p>
+			Quisque sed lorem ac urna pulvinar dapibus eu a lectus. Mauris tincidunt ultrices ultrices. Nulla at odio auctor metus varius viverra et vel ante. Duis hendrerit varius euismod. Aliquam rhoncus arcu ut velit posuere tincidunt eleifend nunc accumsan. Etiam ac leo sed metus adipiscing commodo. In hac habitasse platea dictumst. Nulla metus est, vehicula in sollicitudin non, pulvinar at ante. Nunc sed nisi nibh. In bibendum, nunc non sagittis ornare, lorem ipsum feugiat velit, et tempus leo mauris et dui.
+		</p>
+		<p>
+			Donec tempor enim feugiat nisl congue eu sagittis ante blandit. Phasellus vitae tortor pellentesque nibh cursus porta. Quisque nisi purus, lobortis quis tempus sed, lobortis nec enim. Sed gravida, nisl blandit mollis pharetra, nisl diam consequat arcu, consequat molestie justo nulla id augue. Suspendisse eget consectetur enim. Nullam a purus quis lectus egestas ultricies. Donec turpis arcu, dignissim semper condimentum in, eleifend a augue. Nulla ac nisi molestie mauris commodo tristique ac sit amet odio. Nulla vel tellus a felis gravida auctor nec eu urna. Pellentesque a nisi at enim tincidunt rhoncus eget sit amet turpis. Sed feugiat blandit purus nec venenatis.
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<p>
+			Proin leo turpis, lacinia nec laoreet at, pretium a urna. Maecenas ac nibh id metus blandit posuere non quis dui. Nunc commodo orci commodo felis ullamcorper in consequat leo pharetra. Nam consequat lectus nec lacus fermentum ultrices. Suspendisse massa metus, faucibus mollis ornare nec, porta nec odio. Praesent a enim quis sem sollicitudin laoreet. Donec nec est ante, sed pretium tellus. In aliquam ligula aliquam arcu tempor blandit sagittis sapien luctus. Sed ut urna vel nulla scelerisque suscipit nec ac erat. Suspendisse ipsum erat, euismod ultrices accumsan nec, accumsan nec sem. Morbi felis lorem, mollis suscipit viverra non, interdum laoreet lectus. Nunc molestie congue semper.
+		</p>
+		<a name="named_anchor"></a>
+		<h2>Named anchor</h2>
+		<p>
+			<a href="#top">back to top</a>
+		</p>
+		<p>
+			Quisque sed lorem ac urna pulvinar dapibus eu a lectus. Mauris tincidunt ultrices ultrices. Nulla at odio auctor metus varius viverra et vel ante. Duis hendrerit varius euismod. Aliquam rhoncus arcu ut velit posuere tincidunt eleifend nunc accumsan. Etiam ac leo sed metus adipiscing commodo. In hac habitasse platea dictumst. Nulla metus est, vehicula in sollicitudin non, pulvinar at ante. Nunc sed nisi nibh. In bibendum, nunc non sagittis ornare, lorem ipsum feugiat velit, et tempus leo mauris et dui.
+		</p>
+		<p>
+			Donec tempor enim feugiat nisl congue eu sagittis ante blandit. Phasellus vitae tortor pellentesque nibh cursus porta. Quisque nisi purus, lobortis quis tempus sed, lobortis nec enim. Sed gravida, nisl blandit mollis pharetra, nisl diam consequat arcu, consequat molestie justo nulla id augue. Suspendisse eget consectetur enim. Nullam a purus quis lectus egestas ultricies. Donec turpis arcu, dignissim semper condimentum in, eleifend a augue. Nulla ac nisi molestie mauris commodo tristique ac sit amet odio. Nulla vel tellus a felis gravida auctor nec eu urna. Pellentesque a nisi at enim tincidunt rhoncus eget sit amet turpis. Sed feugiat blandit purus nec venenatis.
+		</p>
+		<span id="id_anchor"></span>
+		<h2>ID anchor</h2>
+		<p>
+			<a href="#top">back to top</a>
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<p>
+			Proin leo turpis, lacinia nec laoreet at, pretium a urna. Maecenas ac nibh id metus blandit posuere non quis dui. Nunc commodo orci commodo felis ullamcorper in consequat leo pharetra. Nam consequat lectus nec lacus fermentum ultrices. Suspendisse massa metus, faucibus mollis ornare nec, porta nec odio. Praesent a enim quis sem sollicitudin laoreet. Donec nec est ante, sed pretium tellus. In aliquam ligula aliquam arcu tempor blandit sagittis sapien luctus. Sed ut urna vel nulla scelerisque suscipit nec ac erat. Suspendisse ipsum erat, euismod ultrices accumsan nec, accumsan nec sem. Morbi felis lorem, mollis suscipit viverra non, interdum laoreet lectus. Nunc molestie congue semper.
+		</p>
+		<p>
+			Quisque sed lorem ac urna pulvinar dapibus eu a lectus. Mauris tincidunt ultrices ultrices. Nulla at odio auctor metus varius viverra et vel ante. Duis hendrerit varius euismod. Aliquam rhoncus arcu ut velit posuere tincidunt eleifend nunc accumsan. Etiam ac leo sed metus adipiscing commodo. In hac habitasse platea dictumst. Nulla metus est, vehicula in sollicitudin non, pulvinar at ante. Nunc sed nisi nibh. In bibendum, nunc non sagittis ornare, lorem ipsum feugiat velit, et tempus leo mauris et dui.
+		</p>
+		<p>
+			Donec tempor enim feugiat nisl congue eu sagittis ante blandit. Phasellus vitae tortor pellentesque nibh cursus porta. Quisque nisi purus, lobortis quis tempus sed, lobortis nec enim. Sed gravida, nisl blandit mollis pharetra, nisl diam consequat arcu, consequat molestie justo nulla id augue. Suspendisse eget consectetur enim. Nullam a purus quis lectus egestas ultricies. Donec turpis arcu, dignissim semper condimentum in, eleifend a augue. Nulla ac nisi molestie mauris commodo tristique ac sit amet odio. Nulla vel tellus a felis gravida auctor nec eu urna. Pellentesque a nisi at enim tincidunt rhoncus eget sit amet turpis. Sed feugiat blandit purus nec venenatis.
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<span id=".id_anchor"></span>
+		<h2>ID anchor with dot in name</h2>
+		<p>
+			<a href="#top">back to top</a>
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<p>
+			Proin leo turpis, lacinia nec laoreet at, pretium a urna. Maecenas ac nibh id metus blandit posuere non quis dui. Nunc commodo orci commodo felis ullamcorper in consequat leo pharetra. Nam consequat lectus nec lacus fermentum ultrices. Suspendisse massa metus, faucibus mollis ornare nec, porta nec odio. Praesent a enim quis sem sollicitudin laoreet. Donec nec est ante, sed pretium tellus. In aliquam ligula aliquam arcu tempor blandit sagittis sapien luctus. Sed ut urna vel nulla scelerisque suscipit nec ac erat. Suspendisse ipsum erat, euismod ultrices accumsan nec, accumsan nec sem. Morbi felis lorem, mollis suscipit viverra non, interdum laoreet lectus. Nunc molestie congue semper.
+		</p>
+		<p>
+			Quisque sed lorem ac urna pulvinar dapibus eu a lectus. Mauris tincidunt ultrices ultrices. Nulla at odio auctor metus varius viverra et vel ante. Duis hendrerit varius euismod. Aliquam rhoncus arcu ut velit posuere tincidunt eleifend nunc accumsan. Etiam ac leo sed metus adipiscing commodo. In hac habitasse platea dictumst. Nulla metus est, vehicula in sollicitudin non, pulvinar at ante. Nunc sed nisi nibh. In bibendum, nunc non sagittis ornare, lorem ipsum feugiat velit, et tempus leo mauris et dui.
+		</p>
+		<p>
+			Donec tempor enim feugiat nisl congue eu sagittis ante blandit. Phasellus vitae tortor pellentesque nibh cursus porta. Quisque nisi purus, lobortis quis tempus sed, lobortis nec enim. Sed gravida, nisl blandit mollis pharetra, nisl diam consequat arcu, consequat molestie justo nulla id augue. Suspendisse eget consectetur enim. Nullam a purus quis lectus egestas ultricies. Donec turpis arcu, dignissim semper condimentum in, eleifend a augue. Nulla ac nisi molestie mauris commodo tristique ac sit amet odio. Nulla vel tellus a felis gravida auctor nec eu urna. Pellentesque a nisi at enim tincidunt rhoncus eget sit amet turpis. Sed feugiat blandit purus nec venenatis.
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<span id="target"></span>
+		<h2>Target anchor</h2>
+		<p>
+			<a href="#top">back to top</a>
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<p>
+			Proin leo turpis, lacinia nec laoreet at, pretium a urna. Maecenas ac nibh id metus blandit posuere non quis dui. Nunc commodo orci commodo felis ullamcorper in consequat leo pharetra. Nam consequat lectus nec lacus fermentum ultrices. Suspendisse massa metus, faucibus mollis ornare nec, porta nec odio. Praesent a enim quis sem sollicitudin laoreet. Donec nec est ante, sed pretium tellus. In aliquam ligula aliquam arcu tempor blandit sagittis sapien luctus. Sed ut urna vel nulla scelerisque suscipit nec ac erat. Suspendisse ipsum erat, euismod ultrices accumsan nec, accumsan nec sem. Morbi felis lorem, mollis suscipit viverra non, interdum laoreet lectus. Nunc molestie congue semper.
+		</p>
+		<p>
+			Quisque sed lorem ac urna pulvinar dapibus eu a lectus. Mauris tincidunt ultrices ultrices. Nulla at odio auctor metus varius viverra et vel ante. Duis hendrerit varius euismod. Aliquam rhoncus arcu ut velit posuere tincidunt eleifend nunc accumsan. Etiam ac leo sed metus adipiscing commodo. In hac habitasse platea dictumst. Nulla metus est, vehicula in sollicitudin non, pulvinar at ante. Nunc sed nisi nibh. In bibendum, nunc non sagittis ornare, lorem ipsum feugiat velit, et tempus leo mauris et dui.
+		</p>
+		<p>
+			Donec tempor enim feugiat nisl congue eu sagittis ante blandit. Phasellus vitae tortor pellentesque nibh cursus porta. Quisque nisi purus, lobortis quis tempus sed, lobortis nec enim. Sed gravida, nisl blandit mollis pharetra, nisl diam consequat arcu, consequat molestie justo nulla id augue. Suspendisse eget consectetur enim. Nullam a purus quis lectus egestas ultricies. Donec turpis arcu, dignissim semper condimentum in, eleifend a augue. Nulla ac nisi molestie mauris commodo tristique ac sit amet odio. Nulla vel tellus a felis gravida auctor nec eu urna. Pellentesque a nisi at enim tincidunt rhoncus eget sit amet turpis. Sed feugiat blandit purus nec venenatis.
+		</p>
+		<p>
+			Mauris convallis pretium risus, eget vulputate quam egestas ut. Nullam facilisis bibendum quam laoreet varius. Donec in leo a eros tincidunt tincidunt. Aliquam fermentum pellentesque rutrum. Nunc hendrerit pharetra augue a lacinia. Phasellus tempor commodo leo id lacinia. Integer sit amet cursus quam. Cras tortor leo, consectetur et eleifend id, venenatis ac nibh.
+		</p>
+		<p>
+			<a href="#top">back to top</a>
+		</p>
+		<div class="footer">
+			get the source code on GitHub : <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin">ArthurClemens/jquery-page-scroll-plugin</a>
+		</div>
 
-    
-
-    
-
-    
-      <h2>Authors</h2>
-      <p>Arthur Clemens (arthur@visiblearea.com)<br/>      </p>
-    
-
-    
-      <h2>Contact</h2>
-      <p>Arthur Clemens (arthur@visiblearea.com)<br/>      </p>
-    
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin/zipball/master">zip</a> or
-      <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin/tarball/master">tar formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/ArthurClemens/jquery-page-scroll-plugin</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin">ArthurClemens/jquery-page-scroll-plugin</a>
-    </div>
-
-  </div>
-
+	</div>
 </body>
 </html>
