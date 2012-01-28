@@ -64,17 +64,17 @@ Change the scroll object:
 
 
 ## Options
-`speed`: pixels per second; calculates the duration
-`maxDuration`: (only used with `speed`) maximum scroll duration in milliseconds
-`offset`: pixels
-`duration`: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides `speed`
-`easing`: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
-`beforeScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter; return false to stop scrolling.
-`beforeScrollDelay`: milliseconds to wait before scrolling
-`afterScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
-`afterScrollDelay`: milliseconds to wait before calling afterScroll; default 0
-`scroller`: jQuery selector to scroll; default 'body'
-`target`: jQuery element to scroll to; default not set
+* `speed`: pixels per second; calculates the duration
+* `maxDuration`: (only used with `speed`) maximum scroll duration in milliseconds
+* `offset`: pixels
+* `duration`: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides `speed`
+* `easing`: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
+* `beforeScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter; return false to stop scrolling.
+* `beforeScrollDelay`: milliseconds to wait before scrolling
+* `afterScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
+* `afterScrollDelay`: milliseconds to wait before calling afterScroll; default 0
+* `scroller`: jQuery selector to scroll; default 'body'
+* `target`: jQuery element to scroll to; default not set
 
 				
 ## Demo
