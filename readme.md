@@ -13,7 +13,7 @@ The beforeScroll function also **acts as a delegate:** pass 'false' to stop scro
 
 Both callback functions can be **called after an optional delay.** For instance to scroll up to tab pane buttons, wait a little, and switch to a different tab.
 
-Of course the plugin supports expected features: target, offset, easing.
+Of course the plugin supports expected features: target, offset, easing, and support for named anchors as well as ids.
 
 
 
