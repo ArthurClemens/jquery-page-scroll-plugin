@@ -9,7 +9,7 @@ Yet another and in small ways different page scroll plugin.
 Personally I find a constant speed a better experience for short scrolls, but scrolling a long page would take too long. With a max duration set, scrolling is always constant up to a given length.
 
 **Callback functions beforeScroll and afterScroll.** Both functions get the scroll options object passed that can be changed "on the fly".
-The beforeScroll function also acts as a delegate: pass 'false' to stop scrolling.
+The beforeScroll function also **acts as a delegate:** pass 'false' to stop scrolling.
 
 Both callback functions can be **called after an optional delay.** For instance to scroll up to tab pane buttons, wait a little, and switch to a different tab.
 
@@ -78,7 +78,7 @@ Change the scroll object:
 
 				
 ## Demo
-See at http://arthurclemens.github.com/jquery-page-scroll-plugin/
+See working code and illustration of options at  http://arthurclemens.github.com/jquery-page-scroll-plugin/
 
 
 ## License
