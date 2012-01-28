@@ -5,22 +5,22 @@ Yet another and in small ways different page scroll plugin.
 
 ## Features
 
-Set the scrolling speed or total duration, or set the speed with a maximum duration.
+**Setting the scroll speed OR the total duration.** Or set the speed with a maximum duration.
 Personally I find a constant speed a better experience for short scrolls, but scrolling a long page would take too long. With a max duration set, scrolling is always constant up to a given length.
 
-Callback functions beforeScroll and afterScroll. Both functions get the scroll options object passed that can be changed "on the fly".
+**Callback functions beforeScroll and afterScroll.** Both functions get the scroll options object passed that can be changed "on the fly".
 The beforeScroll function also acts as a delegate: pass 'false' to stop scrolling.
 
-Both callback functions can be called after an optional delay. For instance to scroll to tab pane buttons, wait a little, and switch tab.
+Both callback functions can be **called after an optional delay.** For instance to scroll up to tab pane buttons, wait a little, and switch to a different tab.
 
-Expected features: target, offset, easing.
+Of course the plugin supports expected features: target, offset, easing.
 
 
 
 ## Usage
 
 
-Quick and easy:
+Quick and easy - add page scrolling to all links on the page:
 
         $("a").pageScroll();
 
@@ -30,14 +30,14 @@ Or to target anchor links only:
 		
 Or pass options:
 
-        $("a.info").pageScroll({
+        $("a").pageScroll({
             duration: 3000
         });
 		
 		
 Conditionally stop scrolling:
 	
-        $('a.stop').pageScroll({
+        $('a').pageScroll({
             beforeScroll: function(opts) {
                 var stop = confirm("Stop scrolling?");
                 if (stop) {
@@ -50,7 +50,7 @@ Conditionally stop scrolling:
 
 Change the scroll object:
 	
-        $('a.beforeafter').pageScroll({
+        $('a').pageScroll({
             beforeScroll: function(opts) {
                 alert("before scroll; duration=" + opts.duration);
                 // speed up
