@@ -1,11 +1,14 @@
 /*
 ---
-name: jquery.sticky.js demo
-description: Shows sticky elements
+name: jquery.page-scroll.js demo
+description: Shows page scrolling with several options
 authors:
   - Arthur Clemens
 resources:
-  - https://raw.github.com/ArthurClemens/jquery-sticky-plugin/master/js/jquery.sticky.js
+  - https://github.com/ArthurClemens/jquery-page-scroll-plugin/blob/master/js/jquery.page-scroll.js
 normalize_css: no
 ...
 */
+
+
+

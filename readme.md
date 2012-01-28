@@ -80,6 +80,7 @@ Change the scroll object:
 ## Demo
 See demo.html and demo-with-options.html.
 
+Fiddle at http://jsfiddle.net/gh/get/jquery/1.7.1/ArthurClemens/jquery-page-scroll-plugin/tree/master/jsfiddle/
 
 
 ## License
