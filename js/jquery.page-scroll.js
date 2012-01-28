@@ -129,7 +129,7 @@ The beforeScroll function acts as a delegate: pass 'false' to stop scrolling.
 		duration: undefined,
 		maxDuration: 450,
 		speed: 900,
-		offset: -20,
+		offset: -15,
 		easing: 'swing',
 		beforeScroll: undefined,
 		beforeScrollDelay: 0,
