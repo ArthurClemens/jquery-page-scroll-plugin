@@ -149,7 +149,6 @@ Reset default values by passing null.
 			}
 
 			if (scrollOpts.willScroll) {
-				calculate(scrollOpts);
 				scrollOpts.willScroll(scrollOpts);
 				// recalculate
 				calculate(scrollOpts);
