@@ -1,6 +1,7 @@
 # Page Scroll jQuery Plugin
 Yet another and in small ways different page scroll plugin.
 
+version 0.1.1
 
 
 ## Features
@@ -12,6 +13,8 @@ Personally I find a constant speed a better experience for short scrolls, but sc
 
 **Callback functions beforeScroll and didScroll.** Both functions get the scroll options object passed that can be changed "on the fly".
 The beforeScroll function also **acts as a delegate:** pass 'false' to stop scrolling.
+
+Use **pushState or jQuery BBQ** to update the url.
 
 Both callback functions can be **called after an optional delay.** For instance to scroll up to tab pane buttons, wait a little, and switch to a different tab.
 
@@ -70,15 +73,22 @@ Scroll on page load:
 			$('body').hide();
 			// secretly go to top
 			window.scrollTo(0, 0);
+		}
 		
-			$(window).pageScroll({
-				id: location.hash,
-				event: 'load',
-				mayScroll: function(opts) {
+		$(window).pageScroll({
+			id: location.hash,
+			event: 'load hashchange',
+			speed: 700,
+			maxDuration: 2000,
+			mayScroll: function(opts) {
+				if ($('body').is(':hidden')) {
 					$('body').show();
 				}
-			});
-		}
+			}
+		});
+
+Use `$.pageScroll({...})` to programmatically scroll to a target. The same options can be used.
+
 
 ## Options
 * `speed`: pixels per second; calculates the duration
@@ -95,6 +105,7 @@ Scroll on page load:
 * `willScrollDelay`: milliseconds to wait before scrolling actually happens
 * `didScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
 * `didScrollDelay`: milliseconds to wait before calling didScroll; default 0
+* `pushState`: true if anchor changes are reflected in the url using history.pushState; default true
 
 Reset default values by passing `null`.
 

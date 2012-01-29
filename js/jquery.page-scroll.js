@@ -1,6 +1,6 @@
 /*
 Page scroll plugin for jquery
-Version 0.1.0
+Version 0.1.1
 (c) 2012 Arthur Clemens arthur@visiblearea.com
 Released under MIT licence
 */
@@ -22,7 +22,8 @@ Options:
 	willScrollDelay: milliseconds to wait before scrolling actually happens
 	didScroll: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
 	didScrollDelay: milliseconds to wait before calling didScroll; default 0
-
+	pushState: true if anchor changes are reflected in the url using history.pushState; default true
+	
 Reset default values by passing null.
 
 */
@@ -33,26 +34,27 @@ Reset default values by passing null.
 	var getIdFromAnchorUrl,
 		getTargetOnThisPage,
 		scroll,
-		scrollToAnchor;
+		scrollToAnchor,
+		timeoutId;
 
 	getIdFromAnchorUrl = function (url) {
 		if (!url) {
 			return '';
 		}
-		return url.replace(/^[^#]*#?!?(.*)$/, '$1');
+		return url.replace(/^#?([^ ]*)$/, '$1');
 	};
 
 	getTargetOnThisPage = function (elem) {
 		var $target,
 			id,
 			targetEl;
-			
+
 		if (!elem.hash) {
 			return undefined;
 		}
 		id = getIdFromAnchorUrl(elem.hash);
 		targetEl = document.getElementById(id);
-		
+
 		if (location.pathname.replace(/^\//, '') === elem.pathname.replace(/^\//, '') && location.hostname === elem.hostname) {
 			if (!targetEl) {
 				// try named link
@@ -67,10 +69,25 @@ Reset default values by passing null.
 		return undefined;
 	};
 
-	scroll = function (elem, options, e) {
-		var opts = $.extend({}, options), // copy to make sure each link has unique values
-			target = opts.target || (opts.id ? $(document.getElementById(getIdFromAnchorUrl(opts.id))) : getTargetOnThisPage(elem));
+	scroll = function (options, elem, e) {
+		var opts,
+			target,
+			targetEl;
 
+		opts = $.extend({}, options); // copy to make sure each link has unique values
+		target = opts.target;
+		if (!(target && target.length)) {
+			if (opts.id) {
+				targetEl = document.getElementById(getIdFromAnchorUrl(opts.id));
+				target = $(targetEl);
+				if (!(target && target.length)) {
+					// try named link
+					target = $('[name="' + opts.id + '"]');
+				}
+			} else {
+				target = getTargetOnThisPage(elem);
+			}
+		}
 		if (target && target.length) {
 			if (e) {
 				e.preventDefault();
@@ -80,61 +97,82 @@ Reset default values by passing null.
 		}
 	};
 
-	scrollToAnchor = function (opts) {
+	scrollToAnchor = function (options) {
 
 		var top,
 			y,
+			duration,
+			limitDuration,
 			calculate,
 			mayScroll,
 			scrollOpts;
 
-		scrollOpts = $.extend({}, opts);
+		scrollOpts = $.extend({}, options);
 
-		calculate = function () {
-			top = scrollOpts.offset + scrollOpts.target.offset().top;
-			if (opts.duration === undefined || opts.duration === null) {
-				// calculate duration
+		top = function (opts) {
+			return opts.offset + opts.target.offset().top;
+		};
+
+		duration = function (opts) {
+			if (opts.duration !== undefined) {
+				return opts.duration;
+			} else {
 				y = document.pageYOffset || document.body.scrollTop;
-				scrollOpts.duration = Math.abs(y - top) / scrollOpts.speed * 1000;
-				// limit duration to max duration
-				if (opts.maxDuration !== undefined && opts.maxDuration !== null) {
-					scrollOpts.duration = Math.min(scrollOpts.duration, opts.maxDuration);
-				}
+				return Math.abs(y - opts.top) / opts.speed * 1000;
 			}
 		};
 
-		setTimeout(function () {
+		limitDuration = function (opts) {
+			// limit duration to max duration
+			if (opts.maxDuration !== undefined && opts.maxDuration !== null) {
+				return Math.min(opts.duration, opts.maxDuration);
+			}
+			return opts.duration;
+		};
+
+		calculate = function (opts) {
+			opts.top = top(opts);
+			opts.duration = duration(opts);
+			opts.duration = limitDuration(opts);
+		};
+
+		clearTimeout(timeoutId);
+
+		timeoutId = setTimeout(function () {
 			mayScroll = true;
 			if (scrollOpts.mayScroll) {
 				mayScroll = scrollOpts.mayScroll(scrollOpts);
 			}
 			if (mayScroll !== undefined && mayScroll === false) {
+				clearTimeout(timeoutId);
 				return;
 			}
 
-			setTimeout(function () {
-				calculate();
-				if (scrollOpts.willScroll) {
-					scrollOpts.willScroll(scrollOpts);
-				}
-				$(scrollOpts.scroller).animate({
-					scrollTop: top
-				}, {
-					duration: scrollOpts.duration,
-					easing: scrollOpts.easing,
-					complete: function () {
-						if (window.history && window.history.pushState) {
-							var id = scrollOpts.target.attr('id') || scrollOpts.target.attr('name') || '';
-							window.history.pushState('', 'anchor', '#' + id);
-						}
-						if (scrollOpts.didScroll) {
-							setTimeout(function () {
-								scrollOpts.didScroll(scrollOpts);
-							}, scrollOpts.didScrollDelay);
-						}
+			if (scrollOpts.willScroll) {
+				calculate(scrollOpts);
+				scrollOpts.willScroll(scrollOpts);
+				// recalculate
+				calculate(scrollOpts);
+			}
+
+			calculate(scrollOpts);
+			$(scrollOpts.scroller).stop().delay(scrollOpts.willScrollDelay).animate({
+				scrollTop: scrollOpts.top
+			}, {
+				duration: scrollOpts.duration,
+				easing: scrollOpts.easing,
+				complete: function () {
+					if (scrollOpts.pushState && window.history && window.history.pushState) {
+						var id = scrollOpts.target.attr('id') || scrollOpts.target.attr('name') || '';
+						window.history.pushState('', 'anchor', '#' + id);
 					}
-				});
-			}, scrollOpts.willScrollDelay);
+					if (scrollOpts.didScroll) {
+						setTimeout(function () {
+							scrollOpts.didScroll(scrollOpts);
+						}, scrollOpts.didScrollDelay);
+					}
+				}
+			});
 		}, 1);
 	};
 
@@ -143,9 +181,16 @@ Reset default values by passing null.
 		options = $.extend({}, $.fn.pageScroll.defaults, options);
 		return this.each(function () {
 			$(this).bind(options.event, function (e) {
-				scroll(this, options, e);
+				scroll(options, this, e);
 			});
 		});
+	};
+
+	$.pageScroll = function (options) {
+
+		options = $.extend({}, $.fn.pageScroll.defaults, options);
+		scroll(options);
+
 	};
 
 	$.fn.pageScroll.defaults = {
@@ -155,14 +200,15 @@ Reset default values by passing null.
 		event: 'click',
 		duration: undefined,
 		maxDuration: 450,
-		speed: 900,
+		speed: 1500,
 		offset: -15,
 		easing: 'swing',
 		mayScroll: undefined,
 		willScroll: undefined,
 		willScrollDelay: 0,
 		didScroll: undefined,
-		didScrollDelay: 0
+		didScrollDelay: 0,
+		pushState: true
     };
 
 }(jQuery));
