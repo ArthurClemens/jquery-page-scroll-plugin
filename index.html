@@ -19,19 +19,19 @@
 				$('body').hide();
 				// secretly go to top
 				window.scrollTo(0, 0);
-
-				$(window).pageScroll({
-					id: location.hash,
-					event: 'load hashchange',
-					speed: 700,
-					maxDuration: 2000,
-					mayScroll: function(opts) {
-						if ($('body').is(':hidden')) {
-							$('body').show();
-						}
-					}
-				});
 			}
+			
+			$(window).pageScroll({
+				id: location.hash,
+				event: 'load hashchange',
+				speed: 700,
+				maxDuration: 2000,
+				mayScroll: function(opts) {
+					if ($('body').is(':hidden')) {
+						$('body').show();
+					}
+				}
+			});
 
 			if (console) {
 				console.log("page scroll defaults: ", $.fn.pageScroll.defaults);
