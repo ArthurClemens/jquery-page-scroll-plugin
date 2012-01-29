@@ -11,13 +11,33 @@
 	
 	<script type='text/javascript'>
 		// <![CDATA[
+		
 		jQuery(document).ready(function($) {
 			
+			if (location.hash) {
+				// hide body before forcing to top
+				$('body').hide();
+				// secretly go to top
+				window.scrollTo(0, 0);
+
+				$(window).pageScroll({
+					id: location.hash,
+					event: 'load hashchange',
+					speed: 700,
+					maxDuration: 2000,
+					mayScroll: function(opts) {
+						if ($('body').is(':hidden')) {
+							$('body').show();
+						}
+					}
+				});
+			}
+
 			if (console) {
 				console.log("page scroll defaults: ", $.fn.pageScroll.defaults);
 			}
 			
-			$('a.normal').pageScroll();
+			$('a').pageScroll();
 			
 			$('a.special').pageScroll({
 				duration: 1500,
@@ -28,21 +48,26 @@
 				duration: 100
 			});
 			
+			$('a.mouseover').pageScroll({
+				target: $('#target'),
+				event: 'mouseover'
+			});
+			
 			$('a.beforeafter').pageScroll({
-				beforeScroll: function(opts) {
-					alert("before scroll; duration=" + opts.duration);
+				willScroll: function(opts) {
+					alert("will scroll; duration=" + opts.duration);
 					// speed up
 					opts.duration = 100;
 				},
-				afterScroll: function(opts) {
+				willScrollDelay: 200,
+				didScroll: function(opts) {
 					alert("after scroll; duration=" + opts.duration);
 				},
-				beforeScrollDelay: 500,
-				afterScrollDelay: 500
+				didScrollDelay: 500
 			});
 			
 			$('a.stop').pageScroll({
-				beforeScroll: function(opts) {
+				mayScroll: function(opts) {
 					var stop = confirm("Stop scrolling?");
 					if (stop) {
 						return false;
@@ -58,13 +83,14 @@
 	
 	<style type="text/css">
 		body {
-			margin-top: 1.0em;
+			margin-top: 0;
+			padding-top: 0;
 			background-color: #ffffff;
 			font-family: Helvetica, Arial, FreeSans, sans-serif;
 			color: #000;
 		}
 		#container {
-			margin: 0 auto;
+			margin: 10px auto;
 			width: 700px;
 		}
 		h1 { font-size: 2.4em; color: #000000; margin-bottom: 3px; }
@@ -103,7 +129,6 @@
 		}
 	</style>
 </head>
-
 <body>
 	<span id="top"></span>
 	<a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
@@ -116,6 +141,7 @@
 			Yet another and in small ways different page scroll plugin.
 		</div>
 		
+
 		<p class="section">
 			<b>Usage:</b>
 		</p>
@@ -127,19 +153,22 @@ $('a').pageScroll();
 			Illustration of options:
 		</div>
 
+
 		<p class="section">
 			<b>Page links, default behaviour:</b>
 		</p>
 <pre>
-$('a.normal').pageScroll();
+$('a').pageScroll();
 </pre>
 		<ul>
-			<li><a class="normal" href="#named_anchor">Named anchor</a></li>
-			<li><a class="normal" href="#id_anchor">ID anchor</a></li>
-			<li><a class="normal" href="#.id_anchor">ID anchor with dot in name</a></li>
+			<li><a href="#named_anchor">Named anchor</a></li>
+			<li><a href="#id_anchor">ID anchor</a></li>
+			<li><a href="#.id_anchor">ID anchor with dot in name</a></li>
 		</ul>
+
+
 		<p class="section">
-			<b>Page links with options set:</b>
+			<b>Page link with options set:</b>
 		</p>
 <pre>
 $('a.special').pageScroll({
@@ -147,10 +176,10 @@ $('a.special').pageScroll({
 });
 </pre>
 		<ul>
-			<li><a class="special" href="#named_anchor">Named anchor</a></li>
 			<li><a class="special" href="#id_anchor">ID anchor</a></li>
-			<li><a class="special" href="#.id_anchor">ID anchor with dot in name</a></li>
 		</ul>
+		
+		
 		<p class="section">
 			<b>Page link with target:</b>
 		</p>
@@ -163,33 +192,50 @@ $('a.target').pageScroll({
 		<ul>
 			<li><a class="target" href="#">Target anchor</a></li>
 		</ul>
+
+
+		<p class="section">
+			<b>Scroll at mouseover event:</b>
+		</p>
+<pre>
+$('a.mouseover').pageScroll({
+	target: $('#target'),
+	event: 'mouseover'
+});
+</pre>
+		<ul>
+			<li><a class="mouseover" href="#">Mouseover link</a></li>
+		</ul>
+
+
 		<p class="section">
 			<b>Page link with before and after scroll options set:</b>
 		</p>
 <pre>
 $('a.beforeafter').pageScroll({
-	beforeScroll: function(opts) {
-		alert("before scroll; duration=" + opts.duration);
+	willScroll: function(opts) {
+		alert("will scroll; duration=" + opts.duration);
 		// speed up
 		opts.duration = 100;
 	},
-	afterScroll: function(opts) {
+	willScrollDelay: 200,
+	didScroll: function(opts) {
 		alert("after scroll; duration=" + opts.duration);
 	},
-	beforeScrollDelay: 500,
-	afterScrollDelay: 500
+	didScrollDelay: 500
 });
 </pre>
 		<ul>
 			<li><a class="beforeafter" href="#id_anchor">Before and after anchor</a></li>
 		</ul>
 
+
 		<p class="section">
 			<b>Page link with before function delegate to conditionally stop scrolling:</b>
 		</p>
 <pre>
 $('a.stop').pageScroll({
-	beforeScroll: function(opts) {
+	mayScroll: function(opts) {
 		var stop = confirm("Stop scrolling?");
 		if (stop) {
 			return false;
@@ -202,6 +248,35 @@ $('a.stop').pageScroll({
 		<ul>
 			<li><a class="stop" href="#id_anchor">Stop scrolling</a></li>
 		</ul>
+		
+		
+		<p class="section">
+			<b>Scroll on page load:</b>
+		</p>
+<pre>
+if (location.hash) {
+	// hide body before forcing to top
+	$('body').hide();
+	// secretly go to top
+	window.scrollTo(0, 0);
+
+	$(window).pageScroll({
+		id: location.hash,
+		event: 'load',
+		speed: 700,
+		maxDuration: 2000,
+		mayScroll: function(opts) {
+			$('body').show();
+		},
+		willScrollDelay: 500 // not necessary, but adds to the effect
+	});
+}
+</pre>
+		<p>
+			Test this by visiting <a href='#id_anchor'>this anchor</a> and then reload the page.
+		</p>
+
+
 <div class="container">
 		<h2>Proin leo turpis</h2>
 		<p>
