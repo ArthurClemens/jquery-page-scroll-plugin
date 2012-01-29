@@ -36,13 +36,23 @@ Reset default values by passing null.
 		scrollToAnchor;
 
 	getIdFromAnchorUrl = function (url) {
+		if (!url) {
+			return '';
+		}
 		return url.replace(/^[^#]*#?!?(.*)$/, '$1');
 	};
 
 	getTargetOnThisPage = function (elem) {
 		var $target,
-			id = getIdFromAnchorUrl(elem.hash),
-			targetEl = document.getElementById(id);
+			id,
+			targetEl;
+			
+		if (!elem.hash) {
+			return undefined;
+		}
+		id = getIdFromAnchorUrl(elem.hash);
+		targetEl = document.getElementById(id);
+		
 		if (location.pathname.replace(/^\//, '') === elem.pathname.replace(/^\//, '') && location.hostname === elem.hostname) {
 			if (!targetEl) {
 				// try named link
