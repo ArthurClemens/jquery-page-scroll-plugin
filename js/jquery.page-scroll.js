@@ -13,15 +13,17 @@ Options:
 	offset: pixels
 	duration: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides speed
 	easing: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
-	beforeScroll: function called when scrolling is complete; the function is called with the "scroll options" object as parameter; return false to stop scrolling.
-	beforeScrollDelay: milliseconds to wait before scrolling
-	afterScroll: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
-	afterScrollDelay: milliseconds to wait before calling afterScroll; default 0
 	scroller: jQuery selector to scroll; default 'body'
 	target: jQuery element to scroll to; default not set
+	id: target id to scroll to; may be a url hash like '#bottom'; default not set
+	event: event that triggers scrolling; may be a space-separated list of event names, like 'load hashchange'; default 'click'
+	mayScroll: function called before any scrolling; the function is called with the "scroll options" object as parameter; return false to stop scrolling
+	willScroll: function called just before scrolling will happen
+	willScrollDelay: milliseconds to wait before scrolling actually happens
+	didScroll: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
+	didScrollDelay: milliseconds to wait before calling didScroll; default 0
 
-Scroll options can conditionally be changed.
-The beforeScroll function acts as a delegate: pass 'false' to stop scrolling.
+Reset default values by passing null.
 
 */
 
@@ -30,6 +32,7 @@ The beforeScroll function acts as a delegate: pass 'false' to stop scrolling.
 
 	var getIdFromAnchorUrl,
 		getTargetOnThisPage,
+		scroll,
 		scrollToAnchor;
 
 	getIdFromAnchorUrl = function (url) {
@@ -54,71 +57,83 @@ The beforeScroll function acts as a delegate: pass 'false' to stop scrolling.
 		return undefined;
 	};
 
+	scroll = function (elem, options, e) {
+		var opts = $.extend({}, options), // copy to make sure each link has unique values
+			target = opts.target || (opts.id ? $(document.getElementById(getIdFromAnchorUrl(opts.id))) : getTargetOnThisPage(elem));
+
+		if (target && target.length) {
+			if (e) {
+				e.preventDefault();
+			}
+			opts.target = target;
+			scrollToAnchor(opts);
+		}
+	};
+
 	scrollToAnchor = function (opts) {
 
 		var top,
 			y,
-			animate,
+			calculate,
+			mayScroll,
 			scrollOpts;
 
 		scrollOpts = $.extend({}, opts);
-		top = scrollOpts.offset + scrollOpts.target.offset().top;
 
-		if (scrollOpts.duration === undefined) {
-			// calculate duration
-			y = document.pageYOffset || document.body.scrollTop;
-			scrollOpts.duration = Math.abs(y - top) / scrollOpts.speed * 1000;
-			if (opts.maxDuration !== undefined) {
-				scrollOpts.duration = Math.min(scrollOpts.duration, opts.maxDuration);
+		calculate = function () {
+			top = scrollOpts.offset + scrollOpts.target.offset().top;
+			if (opts.duration === undefined || opts.duration === null) {
+				// calculate duration
+				y = document.pageYOffset || document.body.scrollTop;
+				scrollOpts.duration = Math.abs(y - top) / scrollOpts.speed * 1000;
+				// limit duration to max duration
+				if (opts.maxDuration !== undefined && opts.maxDuration !== null) {
+					scrollOpts.duration = Math.min(scrollOpts.duration, opts.maxDuration);
+				}
 			}
-		}
+		};
 
-		animate = function () {
-			var doScroll = true;
-			if (scrollOpts.beforeScroll) {
-				doScroll = scrollOpts.beforeScroll(scrollOpts);
+		setTimeout(function () {
+			mayScroll = true;
+			if (scrollOpts.mayScroll) {
+				mayScroll = scrollOpts.mayScroll(scrollOpts);
 			}
-			if (doScroll !== undefined && doScroll === false) {
+			if (mayScroll !== undefined && mayScroll === false) {
 				return;
 			}
 
-			$(scrollOpts.scroller).animate({
-				scrollTop: top
-			}, {
-				duration: scrollOpts.duration,
-				easing: scrollOpts.easing,
-				complete: function () {
-					if (scrollOpts.afterScroll !== undefined) {
-						setTimeout(function () {
-							scrollOpts.afterScroll(scrollOpts);
-						}, scrollOpts.afterScrollDelay);
-					}
+			setTimeout(function () {
+				calculate();
+				if (scrollOpts.willScroll) {
+					scrollOpts.willScroll(scrollOpts);
 				}
-			});
-		};
-		setTimeout(function () {
-			animate();
-		}, scrollOpts.beforeScrollDelay);
+				$(scrollOpts.scroller).animate({
+					scrollTop: top
+				}, {
+					duration: scrollOpts.duration,
+					easing: scrollOpts.easing,
+					complete: function () {
+						if (window.history && window.history.pushState) {
+							var id = scrollOpts.target.attr('id') || scrollOpts.target.attr('name') || '';
+							window.history.pushState('', 'anchor', '#' + id);
+						}
+						if (scrollOpts.didScroll) {
+							setTimeout(function () {
+								scrollOpts.didScroll(scrollOpts);
+							}, scrollOpts.didScrollDelay);
+						}
+					}
+				});
+			}, scrollOpts.willScrollDelay);
+		}, 1);
 	};
 
 	$.fn.pageScroll = function (options) {
 
 		options = $.extend({}, $.fn.pageScroll.defaults, options);
-
 		return this.each(function () {
-
-			$(this).click(function (e) {
-				var opts = $.extend({}, options), // copy to make sure each link has unique values
-					target = opts.target;
-
-				if (!target) {
-					target = getTargetOnThisPage(this);
-				}
-				if (target) {
-					e.preventDefault();
-					opts.target = target;
-					scrollToAnchor(opts);
-				}
+			$(this).bind(options.event, function (e) {
+				scroll(this, options, e);
 			});
 		});
 	};
@@ -126,15 +141,18 @@ The beforeScroll function acts as a delegate: pass 'false' to stop scrolling.
 	$.fn.pageScroll.defaults = {
 		scroller: 'body',
 		target: undefined,
+		id: undefined,
+		event: 'click',
 		duration: undefined,
 		maxDuration: 450,
 		speed: 900,
-		offset: -20,
+		offset: -15,
 		easing: 'swing',
-		beforeScroll: undefined,
-		beforeScrollDelay: 0,
-		afterScroll: undefined,
-		afterScrollDelay: 0
+		mayScroll: undefined,
+		willScroll: undefined,
+		willScrollDelay: 0,
+		didScroll: undefined,
+		didScrollDelay: 0
     };
 
 }(jQuery));
