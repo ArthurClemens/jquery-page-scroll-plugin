@@ -6,14 +6,16 @@ Yet another and in small ways different page scroll plugin.
 ## Features
 
 **Setting the scroll speed OR the total duration.** Or set the speed with a maximum duration.
-Personally I find a constant speed a better experience for short scrolls, but scrolling a long page would take too long. With a max duration set, scrolling is always constant up to a given length.
+Personally I find a constant speed a better experience for short scrolls, but scrolling a long page would take too long. With a max duration set, scrolling is always constant - up to a given length.
 
-**Callback functions beforeScroll and afterScroll.** Both functions get the scroll options object passed that can be changed "on the fly".
-The beforeScroll function also acts as a delegate: pass 'false' to stop scrolling.
+**Scroll on click or any other event**. For instance, you can scroll the page on page load.
+
+**Callback functions beforeScroll and didScroll.** Both functions get the scroll options object passed that can be changed "on the fly".
+The beforeScroll function also **acts as a delegate:** pass 'false' to stop scrolling.
 
 Both callback functions can be **called after an optional delay.** For instance to scroll up to tab pane buttons, wait a little, and switch to a different tab.
 
-Of course the plugin supports expected features: target, offset, easing.
+Of course the plugin supports expected features: target, offset, easing, and support for named anchors as well as ids.
 
 
 
@@ -38,7 +40,7 @@ Or pass options:
 Conditionally stop scrolling:
 	
         $('a').pageScroll({
-            beforeScroll: function(opts) {
+            mayScroll: function(opts) {
                 var stop = confirm("Stop scrolling?");
                 if (stop) {
                     return false;
@@ -51,17 +53,32 @@ Conditionally stop scrolling:
 Change the scroll object:
 	
         $('a').pageScroll({
-            beforeScroll: function(opts) {
-                alert("before scroll; duration=" + opts.duration);
+            willScroll: function(opts) {
+                alert("will scroll; duration=" + opts.duration);
                 // speed up
                 opts.duration = 100;
             },
-            afterScroll: function(opts) {
-                alert("after scroll; duration=" + opts.duration);
+            didScroll: function(opts) {
+                alert("did scroll; duration=" + opts.duration);
             },
         });
 
+Scroll on page load:
 
+		if (location.hash) {
+			// hide body before forcing to top
+			$('body').hide();
+			// secretly go to top
+			window.scrollTo(0, 0);
+		
+			$(window).pageScroll({
+				id: location.hash,
+				event: 'load',
+				mayScroll: function(opts) {
+					$('body').show();
+				}
+			});
+		}
 
 ## Options
 * `speed`: pixels per second; calculates the duration
@@ -69,18 +86,20 @@ Change the scroll object:
 * `offset`: pixels
 * `duration`: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides `speed`
 * `easing`: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
-* `beforeScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter; return false to stop scrolling.
-* `beforeScrollDelay`: milliseconds to wait before scrolling
-* `afterScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
-* `afterScrollDelay`: milliseconds to wait before calling afterScroll; default 0
 * `scroller`: jQuery selector to scroll; default 'body'
 * `target`: jQuery element to scroll to; default not set
+* `id`: target id to scroll to; may be a url hash like '#bottom'; default not set
+* `event`: event that triggers scrolling; may be a space-separated list of event names, like 'load hashchange'; default 'click'
+* `mayScroll`: function called before scrolling; the function is called with the "scroll options" object as parameter; return false to stop scrolling
+* `willScroll`: function called just before scrolling will happen; the function is called with the "scroll options" object as parameter and can be changed on the fly
+* `willScrollDelay`: milliseconds to wait before scrolling actually happens
+* `didScroll`: function called when scrolling is complete; the function is called with the "scroll options" object as parameter
+* `didScrollDelay`: milliseconds to wait before calling didScroll; default 0
 
-				
+Reset default values by passing `null`.
+
 ## Demo
-See demo.html and demo-with-options.html.
-
-Fiddle at http://jsfiddle.net/gh/get/jquery/1.7.1/ArthurClemens/jquery-page-scroll-plugin/tree/master/jsfiddle/
+See working code and illustration of options at  http://arthurclemens.github.com/jquery-page-scroll-plugin/
 
 
 ## License
