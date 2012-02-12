@@ -69,10 +69,12 @@ Change the scroll object:
 Scroll on page load:
 
 		if (location.hash) {
-			// hide body before forcing to top
-			$('body').hide();
-			// secretly go to top
-			window.scrollTo(0, 0);
+			if ($(location.hash).length) {
+				// hide body before forcing to top
+				$('body').hide();
+				// secretly go to top
+				window.scrollTo(0, 0);
+			}
 		}
 		
 		$(window).pageScroll({
