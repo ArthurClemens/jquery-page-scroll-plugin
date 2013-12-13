@@ -14,7 +14,7 @@ Personally I find a constant speed a better experience for short scrolls, but sc
 **Callback functions beforeScroll and didScroll.** Both functions get the scroll options object passed that can be changed "on the fly".
 The beforeScroll function also **acts as a delegate:** pass 'false' to stop scrolling.
 
-Use **pushState or jQuery BBQ** to update the url.
+Use **pushState** to update the url.
 
 Both callback functions can be **called after an optional delay.** For instance to scroll up to tab pane buttons, wait a little, and switch to a different tab.
 
@@ -98,7 +98,7 @@ Use `$.pageScroll({...})` to programmatically scroll to a target. The same optio
 * `offset`: pixels
 * `duration`: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides `speed`
 * `easing`: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
-* `scroller`: jQuery selector to scroll; default 'html' (note: Firefox places page overflow at the html element; do not use 'body' when scrolling must work in Firefox)
+* `scroller`: jQuery selector to scroll; default 'html, body'
 * `target`: jQuery element to scroll to; default not set
 * `id`: target id to scroll to; may be a url hash like '#bottom'; default not set
 * `event`: event that triggers scrolling; may be a space-separated list of event names, like 'load hashchange'; default 'click'
