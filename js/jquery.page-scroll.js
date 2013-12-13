@@ -123,7 +123,7 @@ Reset default values by passing null.
 
         limitDuration = function (opts) {
             // limit duration to max duration
-            if (opts.maxDuration !== undefined && opts.maxDuration !== null) {
+            if (!options.duration && (opts.maxDuration !== undefined && opts.maxDuration !== null)) {
                 return Math.min(opts.duration, opts.maxDuration);
             }
             return opts.duration;
