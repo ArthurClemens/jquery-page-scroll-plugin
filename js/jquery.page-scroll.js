@@ -193,7 +193,7 @@ Reset default values by passing null.
     };
 
     $.fn.pageScroll.defaults = {
-        scroller: 'html',
+        scroller: 'html, body',
         target: undefined,
         id: undefined,
         event: 'click',
