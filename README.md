@@ -5,7 +5,7 @@ version 0.1.2
 
 
 ## Demo
-See [working code and illustration of options]( http://arthurclemens.github.com/jquery-page-scroll-plugin/).
+See [working code and illustration of options]( http://arthurclemens.github.io/jquery-page-scroll-plugin/).
 
 
 ## Features
