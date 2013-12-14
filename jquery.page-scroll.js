@@ -1,6 +1,6 @@
 /*
 Page scroll plugin for jquery
-Version 0.1.2
+Version 0.1.3
 (c) 2012-2013 Arthur Clemens arthur@visiblearea.com
 Released under MIT licence
 */
@@ -31,11 +31,21 @@ Reset default values by passing null.
 (function ($) {
     "use strict";
 
-    var getIdFromAnchorUrl,
+    var DATA_KEY = "jquery-page-scroll-options",
+        init,
+        getIdFromAnchorUrl,
         getTargetOnThisPage,
         scroll,
         scrollToAnchor,
         timeoutId;
+
+    init = function (el, opts) {
+        var options = $.extend({}, $.fn.pageScroll.defaults, opts);
+        $(el).data(DATA_KEY, options);
+        $(el).bind(options.event, function (e) {
+            scroll(this, e);
+        });
+    };
 
     getIdFromAnchorUrl = function (url) {
         if (!url) {
@@ -44,18 +54,18 @@ Reset default values by passing null.
         return url.replace(/^#?([^ ]*)$/, '$1');
     };
 
-    getTargetOnThisPage = function (elem) {
+    getTargetOnThisPage = function (el) {
         var $target,
             id,
             targetEl;
 
-        if (!elem.hash) {
+        if (!el.hash) {
             return undefined;
         }
-        id = getIdFromAnchorUrl(elem.hash);
+        id = getIdFromAnchorUrl(el.hash);
         targetEl = document.getElementById(id);
 
-        if (location.pathname.replace(/^\//, '') === elem.pathname.replace(/^\//, '') && location.hostname === elem.hostname) {
+        if (location.pathname.replace(/^\//, '') === el.pathname.replace(/^\//, '') && location.hostname === el.hostname) {
             if (!targetEl) {
                 // try named link
                 $target = $('[name="' + id + '"]');
@@ -69,36 +79,36 @@ Reset default values by passing null.
         return undefined;
     };
 
-    scroll = function (options, elem, e) {
-        var opts,
+    scroll = function (el, e) {
+        var options,
             target,
             targetEl;
 
-        opts = $.extend({}, options); // copy to make sure each link has unique values
-        target = opts.target;
+        options = $(el).data(DATA_KEY);
+        target = options.target;
         if (!(target && target.length)) {
-            if (opts.id) {
-                targetEl = document.getElementById(getIdFromAnchorUrl(opts.id));
+            if (options.id) {
+                targetEl = document.getElementById(getIdFromAnchorUrl(options.id));
                 target = $(targetEl);
                 if (!(target && target.length)) {
                     // try named link
-                    target = $('[name="' + opts.id + '"]');
+                    // although named anchors are deprecated
+                    target = $('[name="' + options.id + '"]');
                 }
             } else {
-                target = getTargetOnThisPage(elem);
+                target = getTargetOnThisPage(el);
             }
         }
         if (target && target.length) {
             if (e) {
                 e.preventDefault();
             }
-            opts.target = target;
-            scrollToAnchor(opts);
+            options.target = target;
+            scrollToAnchor(options);
         }
     };
 
     scrollToAnchor = function (options) {
-
         var top,
             y,
             duration,
@@ -178,18 +188,10 @@ Reset default values by passing null.
         }, 1);
     };
 
-    $.fn.pageScroll = function (options) {
-        options = $.extend({}, $.fn.pageScroll.defaults, options);
+    $.fn.pageScroll = function (command) {
         return this.each(function () {
-            $(this).bind(options.event, function (e) {
-                scroll(options, this, e);
-            });
+            init(this, command);
         });
-    };
-
-    $.pageScroll = function (options) {
-        options = $.extend({}, $.fn.pageScroll.defaults, options);
-        scroll(options);
     };
 
     $.fn.pageScroll.defaults = {
