@@ -10,7 +10,7 @@ Options:
 
     speed: pixels per second; calculates the duration
     maxDuration: (only used with speed) maximum scroll duration in milliseconds; overrides speed
-    offset: pixels
+    offset: pixels; default 0
     duration: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides speed
     easing: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
     scroller: jQuery selector to scroll; default 'html, body'
@@ -202,7 +202,7 @@ Reset default values by passing null.
         duration: undefined,
         maxDuration: 450,
         speed: 1500,
-        offset: -15,
+        offset: 0,
         easing: 'swing',
         mayScroll: undefined,
         willScroll: undefined,
