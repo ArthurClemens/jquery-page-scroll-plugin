@@ -1,7 +1,7 @@
 # Page Scroll jQuery Plugin
 Yet another and in small ways different page scroll plugin.
 
-version 0.1.2
+version 0.1.4
 
 
 ## Demo
@@ -105,6 +105,7 @@ Use `$.pageScroll({...})` to programmatically scroll to a target. The same optio
 * `scroller`: jQuery selector to scroll; default 'html, body'
 * `target`: jQuery element to scroll to; default not set
 * `id`: target id to scroll to; may be a url hash like '#bottom'; default not set
+* `updateUrl`: should the url be updated with the anchor id to make it bookmarkable; default true
 * `event`: event that triggers scrolling; may be a space-separated list of event names, like 'load hashchange'; default 'click'
 * `mayScroll`: function called before scrolling; the function is called with the "scroll options" object as parameter; return false to stop scrolling
 * `willScroll`: function called just before scrolling will happen; the function is called with the "scroll options" object as parameter and can be changed on the fly
