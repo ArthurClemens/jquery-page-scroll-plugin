@@ -1,6 +1,6 @@
 /*
 Page scroll plugin for jquery
-Version 0.1.3
+Version 0.1.4
 (c) 2012-2013 Arthur Clemens arthur@visiblearea.com
 Released under MIT licence
 */
@@ -10,11 +10,12 @@ Options:
 
     speed: pixels per second; calculates the duration
     maxDuration: (only used with speed) maximum scroll duration in milliseconds; overrides speed
-    offset: pixels
+    offset: pixels; default 0
     duration: explicitly set scroll duration in milliseconds; 0 means immediate (no scrolling easing); overrides speed
     easing: easing name, like 'swing' (default) (use jquery.easing for more easing possibilities)
     scroller: jQuery selector to scroll; default 'html, body'
     target: jQuery element to scroll to; default not set
+    updateUrl: should the url be updated with the anchor id to make it bookmarkable; default true
     id: target id to scroll to; may be a url hash like '#bottom'; default not set
     event: event that triggers scrolling; may be a space-separated list of event names, like 'load hashchange'; default 'click'
     mayScroll: function called before any scrolling; the function is called with the "scroll options" object as parameter; return false to stop scrolling
@@ -174,7 +175,7 @@ Reset default values by passing null.
                     duration: scrollOpts.duration,
                     easing: scrollOpts.easing,
                     complete: function () {
-                        if (scrollOpts.pushState && window.history && window.history.pushState) {
+                        if (scrollOpts.updateUrl && scrollOpts.pushState && window.history && window.history.pushState) {
                             var id = scrollOpts.target.attr('id') || scrollOpts.target.attr('name') || '';
                             window.history.pushState('', 'anchor', '#' + id);
                         }
@@ -198,11 +199,12 @@ Reset default values by passing null.
         scroller: 'html, body',
         target: undefined,
         id: undefined,
+        updateUrl: true,
         event: 'click',
         duration: undefined,
         maxDuration: 450,
         speed: 1500,
-        offset: -15,
+        offset: 0,
         easing: 'swing',
         mayScroll: undefined,
         willScroll: undefined,
