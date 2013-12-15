@@ -1,6 +1,6 @@
 /*
 Page scroll plugin for jquery
-Version 0.1.4
+Version 0.1.5
 (c) 2012-2013 Arthur Clemens arthur@visiblearea.com
 Released under MIT licence
 */
@@ -80,12 +80,15 @@ Reset default values by passing null.
         return undefined;
     };
 
-    scroll = function (el, e) {
+    scroll = function (el, e, options) {
         var options,
             target,
             targetEl;
 
-        options = $(el).data(DATA_KEY);
+        if (!options && el) {
+            options = $(el).data(DATA_KEY);
+        }
+        
         target = options.target;
         if (!(target && target.length)) {
             if (options.id) {
@@ -194,6 +197,11 @@ Reset default values by passing null.
             init(this, command);
         });
     };
+    
+    $.pageScroll = function (options) {
+		options = $.extend({}, $.fn.pageScroll.defaults, options);
+		scroll(undefined, undefined, options);
+	};
 
     $.fn.pageScroll.defaults = {
         scroller: 'html, body',
