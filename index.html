@@ -2,79 +2,8 @@
 <html>
 <head>
 	<meta charset='utf-8'>
-
 	<title>ArthurClemens/jquery-page-scroll-plugin @ GitHub</title>
     <link rel="stylesheet" href="css/docs.css">
-    
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src='js/jquery.page-scroll.js' type='text/javascript'></script>
-	<script type='text/javascript'>
-		// <![CDATA[
-		
-		jQuery(document).ready(function($) {
-			
-			if (location.hash) {
-				// hide body before forcing to top
-				$('body').hide();
-				// secretly go to top
-				window.scrollTo(0, 0);
-			}
-			
-			$(window).pageScroll({
-				id: location.hash,
-				event: 'load hashchange',
-				speed: 700,
-				maxDuration: 2000,
-				willScroll: function(opts) {
-					if ($('body').is(':hidden')) {
-						$('body').show();
-					}
-				},
-				willScrollDelay: 500
-			});
-			
-			$('a').pageScroll();
-			
-			$('a.special').pageScroll({
-				duration: 2000
-			});
-			
-			$('a.target').pageScroll({
-				target: $('#target')
-			});
-			
-			$('a.mouseover').pageScroll({
-				target: $('#target'),
-				event: 'mouseover'
-			});
-			
-			$('a.beforeafter').pageScroll({
-				willScroll: function(opts) {
-					alert("before scroll; duration=" + opts.duration);
-					// speed up
-					opts.duration = 200;
-				},
-				willScrollDelay: 600,
-				didScroll: function(opts) {
-					alert("after scroll; duration=" + opts.duration);
-				},
-				didScrollDelay: 600
-			});
-			
-			$('a.stop').pageScroll({
-				mayScroll: function(opts) {
-					var stop = confirm("Stop scrolling?");
-					if (stop) {
-						return false;
-					} else {
-						return true;
-					}
-				}
-			});
-			
-		});
-		// ]]>
-	</script>
 </head>
 <body>
 	<span id="top"></span>
@@ -85,7 +14,7 @@
 		<h1>jQuery Page scroll plugin</h1>
 
 		<div class="description">
-			Yet another and in small ways different page scroll plugin.			
+            Finegrained control over page scrolling.
 		</div>
 		
 		<p class="section">
@@ -324,5 +253,9 @@ $(window).pageScroll({
 			Get the source code on GitHub : <a href="https://github.com/ArthurClemens/jquery-page-scroll-plugin">ArthurClemens/jquery-page-scroll-plugin</a>
 		</div>
 	</div>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="js/jquery.page-scroll.js" type="text/javascript"></script>
+	<script src="js/demo.js" type="text/javascript"></script>
 </body>
 </html>
