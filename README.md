@@ -1,5 +1,6 @@
 # Page Scroll jQuery Plugin
-Yet another and in small ways different page scroll plugin.
+
+Finegrained control over page scrolling.
 
 version 0.1.4
 
